@@ -1,0 +1,12 @@
+{
+  "id": "INC-TANK-H2S",
+  "title": "Tank Farm H2S Exposure Incident Pattern",
+  "framework": "Incident Report",
+  "clause_reference": "DGFASLI Report #2019-034",
+  "content": "H2S exposure incident at a chemical tank farm during confined space entry operations. H2S sensor TS-01 in Zone C showed progressive drift from 2 ppm to 18 ppm over 35 minutes. Confined space entry permit CS-2203 was active during this period. Ventilation system V-12 was under scheduled maintenance (status: offline). The entry team was not notified of the gas drift because monitoring and permit systems were not integrated. Two workers experienced H2S exposure symptoms before evacuation. Pattern: H2S drift + confined space entry + inadequate ventilation = critical exposure risk. This combination is documented in 4 major H2S exposure incidents across Indian chemical facilities.",
+  "metadata": {
+    "category": "incidents",
+    "incident_type": "h2s_exposure",
+    "pattern_tags": ["h2s_drift", "confined_space", "ventilation_failure"]
+  }
+}

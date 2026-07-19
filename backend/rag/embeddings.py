@@ -1,0 +1,66 @@
+"""Document embedding generation for RAG retrieval."""
+
+from __future__ import annotations
+
+import hashlib
+from typing import Any
+
+import numpy as np
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    SentenceTransformer = None
+
+
+class EmbeddingEngine:
+    """Generates embeddings using sentence-transformers with TF-IDF fallback."""
+
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2") -> None:
+        self.model_name = model_name
+        self._model = None
+        self._vocabulary: dict[str, int] = {}
+        self._idf: dict[str, float] = {}
+
+        if SentenceTransformer is not None:
+            try:
+                self._model = SentenceTransformer(model_name)
+            except Exception:
+                self._model = None
+
+    @property
+    def using_transformer(self) -> bool:
+        return self._model is not None
+
+    def embed(self, texts: list[str]) -> np.ndarray:
+        if self._model is not None:
+            return self._model.encode(texts, normalize_embeddings=True)
+
+        return self._tfidf_embed(texts)
+
+    def embed_single(self, text: str) -> np.ndarray:
+        return self.embed([text])[0]
+
+    def _tfidf_embed(self, texts: list[str]) -> np.ndarray:
+        vectors = []
+        for text in texts:
+            tokens = self._tokenize(text)
+            vec = np.zeros(384)
+            for i, token in enumerate(tokens):
+                idx = int(hashlib.md5(token.encode()).hexdigest(), 16) % 384
+                vec[idx] += 1.0 / (i + 1)
+            norm = np.linalg.norm(vec)
+            if norm > 0:
+                vec = vec / norm
+            vectors.append(vec)
+        return np.array(vectors)
+
+    def _tokenize(self, text: str) -> list[str]:
+        return [
+            w.lower().strip(".,;:!?\"'()[]{}")
+            for w in text.split()
+            if len(w) > 2
+        ]
+
+    def similarity(self, a: np.ndarray, b: np.ndarray) -> float:
+        return float(np.dot(a, b))

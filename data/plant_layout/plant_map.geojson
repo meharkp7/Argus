@@ -1,0 +1,81 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "ARGUS Demo Steel Plant",
+    "plant_id": "DEMO-STEEL-01",
+    "location": "Visakhapatnam Industrial Area",
+    "center": [83.2185, 17.6870]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-A",
+        "name": "Raw Material Storage",
+        "hazard_class": "moderate",
+        "max_occupancy": 15,
+        "sensors": ["GS-11"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[83.2170, 17.6855], [83.2180, 17.6855], [83.2180, 17.6865], [83.2170, 17.6865], [83.2170, 17.6855]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-B",
+        "name": "Processing Unit B",
+        "hazard_class": "high",
+        "max_occupancy": 20,
+        "sensors": ["GS-13", "TS-02"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[83.2185, 17.6858], [83.2195, 17.6858], [83.2195, 17.6870], [83.2185, 17.6870], [83.2185, 17.6858]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-C",
+        "name": "Gas Handling & Pipeline Section",
+        "hazard_class": "critical",
+        "max_occupancy": 10,
+        "sensors": ["GS-12", "TS-01"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[83.2178, 17.6865], [83.2190, 17.6865], [83.2190, 17.6878], [83.2178, 17.6878], [83.2178, 17.6865]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-D",
+        "name": "Finishing & Quality Control",
+        "hazard_class": "moderate",
+        "max_occupancy": 25,
+        "sensors": ["GS-14"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[83.2190, 17.6868], [83.2200, 17.6868], [83.2200, 17.6880], [83.2190, 17.6880], [83.2190, 17.6868]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-E",
+        "name": "Utilities & Boiler Section",
+        "hazard_class": "high",
+        "max_occupancy": 8,
+        "sensors": ["GS-15"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[83.2195, 17.6875], [83.2205, 17.6875], [83.2205, 17.6885], [83.2195, 17.6885], [83.2195, 17.6875]]]
+      }
+    }
+  ]
+}
