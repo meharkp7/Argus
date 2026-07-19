@@ -4,3 +4,7 @@ __pycache__/
 *.pyc
 dist/
 build/
+data/ledger/
+data/trust_calibration/
+data/vector_store/
+frontend/dist/

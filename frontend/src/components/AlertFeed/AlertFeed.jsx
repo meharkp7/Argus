@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { api } from '../api/client';
+import { api } from '../../api/client';
 
 export default function AlertFeed({ onSelectAlert, selectedAlertId }) {
   const [alerts, setAlerts] = useState([]);
