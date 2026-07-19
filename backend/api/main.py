@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,18 +29,18 @@ async def lifespan(app: FastAPI):
 
     simulation_task = asyncio.create_task(_simulation_loop(engine, settings.simulation_tick_interval_seconds))
 
-    yield
-
-    simulation_task.cancel()
     try:
-        await simulation_task
-    except asyncio.CancelledError:
-        pass
+        yield
+    finally:
+        simulation_task.cancel()
+        try:
+            await simulation_task
+        except asyncio.CancelledError:
+            pass
+        engine.stop()
 
-    engine.stop()
 
-
-async def _simulation_loop(engine, interval: float):
+async def _simulation_loop(engine: Any, interval: float):
     while True:
         try:
             if engine._running:
@@ -47,8 +48,8 @@ async def _simulation_loop(engine, interval: float):
             await asyncio.sleep(interval)
         except asyncio.CancelledError:
             break
-        except Exception as e:
-            print(f"Simulation loop error: {e}")
+        except Exception as exc:
+            print(f"Simulation loop error: {exc}")
             await asyncio.sleep(interval)
 
 

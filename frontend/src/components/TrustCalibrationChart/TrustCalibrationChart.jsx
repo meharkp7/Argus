@@ -1,79 +1,82 @@
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { api } from '../../api/client';
+import { formatPercent } from '../../utils/format';
 
-export default function TrustCalibrationChart() {
-  const [metrics, setMetrics] = useState(null);
+export default function TrustCalibrationChart({ metrics: externalMetrics }) {
+  const [metrics, setMetrics] = useState(externalMetrics ?? null);
   const [thresholds, setThresholds] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    if (externalMetrics) setMetrics(externalMetrics);
+  }, [externalMetrics]);
+
+  useEffect(() => {
+    const fetchThresholds = async () => {
       try {
-        const [m, t] = await Promise.all([
-          api.getTrustMetrics(),
-          api.getThresholds(),
-        ]);
-        setMetrics(m);
+        const t = await api.getThresholds();
         setThresholds(t);
+        if (!externalMetrics) {
+          const m = await api.getTrustMetrics();
+          setMetrics(m);
+        }
       } catch (err) {
         console.error('Trust metrics fetch failed:', err);
       }
     };
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
+    fetchThresholds();
+    if (externalMetrics) return undefined;
+    const interval = setInterval(async () => {
+      try {
+        setMetrics(await api.getTrustMetrics());
+      } catch (err) {
+        console.error(err);
+      }
+    }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [externalMetrics]);
 
-  if (!metrics) return null;
+  if (!metrics) {
+    return (
+      <div className="card card--glass">
+        <div className="skeleton-block">Loading trust calibration…</div>
+      </div>
+    );
+  }
 
   const chartData = metrics.history.length > 0
     ? metrics.history
     : [{ feedback_number: 0, false_positive_rate: metrics.false_positive_rate }];
 
   return (
-    <div className="card">
+    <div className="card card--glass">
       <div className="card-header">
         <span className="card-title">Trust Calibration</span>
+        <span className="pill">{metrics.feedback_count} feedback rounds</span>
       </div>
-      <div className="grid-3" style={{ marginBottom: '1rem' }}>
-        <div>
-          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Total Alerts</p>
-          <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>{metrics.total_alerts}</p>
-        </div>
-        <div>
-          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>False Positive Rate</p>
-          <p style={{ fontSize: '1.5rem', fontWeight: 700, color: metrics.false_positive_rate > 0.3 ? 'var(--high)' : 'var(--low)' }}>
-            {(metrics.false_positive_rate * 100).toFixed(1)}%
-          </p>
-        </div>
-        <div>
-          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Precision</p>
-          <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent)' }}>
-            {(metrics.precision * 100).toFixed(1)}%
-          </p>
-        </div>
+      <div className="metric-row metric-row--compact">
+        <div><span className="label">Alerts</span><strong>{metrics.total_alerts}</strong></div>
+        <div><span className="label">False Positives</span><strong>{formatPercent(metrics.false_positive_rate, 1)}</strong></div>
+        <div><span className="label">Precision</span><strong className="text-accent">{formatPercent(metrics.precision, 1)}</strong></div>
       </div>
       {thresholds && (
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-          Active thresholds: compound risk ≥ {(thresholds.compound_risk_threshold * 100).toFixed(0)}% ·
-          sensor z-score ≥ {thresholds.sensor_zscore_threshold}
+        <p className="muted chart-caption">
+          Thresholds · compound ≥ {formatPercent(thresholds.compound_risk_threshold, 0)} · z-score ≥ {thresholds.sensor_zscore_threshold}
         </p>
       )}
-      <ResponsiveContainer width="100%" height={180}>
+      <ResponsiveContainer width="100%" height={190}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2d3a4f" />
-          <XAxis dataKey="feedback_number" stroke="#8899ae" fontSize={11} label={{ value: 'Feedback Round', position: 'insideBottom', offset: -5, fill: '#8899ae', fontSize: 10 }} />
-          <YAxis stroke="#8899ae" fontSize={11} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} />
+          <CartesianGrid strokeDasharray="4 4" stroke="rgba(148,163,184,0.12)" vertical={false} />
+          <XAxis dataKey="feedback_number" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} domain={[0, 1]} />
           <Tooltip
-            contentStyle={{ background: '#1a2332', border: '1px solid #2d3a4f', borderRadius: 8, fontSize: 12 }}
-            formatter={(value) => [`${(value * 100).toFixed(1)}%`, 'False Positive Rate']}
+            contentStyle={{ background: '#111827', border: '1px solid rgba(148,163,184,0.18)', borderRadius: 12, fontSize: 12 }}
+            formatter={(value) => [formatPercent(value, 1), 'False positive rate']}
           />
-          <Line type="monotone" dataKey="false_positive_rate" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 3 }} />
+          <ReferenceLine y={0.3} stroke="#f97316" strokeDasharray="6 4" label={{ value: 'Target ceiling', fill: '#f97316', fontSize: 10 }} />
+          <Line type="monotone" dataKey="false_positive_rate" stroke="#38bdf8" strokeWidth={2.5} dot={{ fill: '#38bdf8', r: 3 }} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
-      <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '0.5rem', textAlign: 'center' }}>
-        Alert precision improves as operator feedback accumulates
-      </p>
     </div>
   );
 }

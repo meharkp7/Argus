@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     api_host: str = "0.0.0.0"
     api_port: int = 8000
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"]
 
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-sonnet-4-20250514"
@@ -51,6 +51,7 @@ class Settings(BaseSettings):
     weather_api_url: str = "https://api.open-meteo.com/v1/forecast"
 
     ledger_batch_size: int = 100
+    app_env: str = "development"
 
 
 @lru_cache

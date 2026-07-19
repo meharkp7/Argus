@@ -145,6 +145,32 @@ class ZoneRiskScore(BaseModel):
     explanation: str | None = None
     centroid: list[float]
     geometry: dict[str, Any] | None = None
+    hazard_class: str | None = None
+    max_occupancy: int | None = None
+    area_sqm: int | None = None
+    maintenance_status: str | None = None
+    process_units: list[str] = Field(default_factory=list)
+    sensors: list[dict[str, Any]] = Field(default_factory=list)
+    active_shift: str | None = None
+
+
+class PlantInfrastructure(BaseModel):
+    name: str
+    feature_type: str
+    geometry: dict[str, Any]
+    properties: dict[str, Any] = Field(default_factory=dict)
+
+
+class SensorPoint(BaseModel):
+    sensor_id: str
+    zone_id: str
+    gas_type: str
+    label: str
+    latitude: float
+    longitude: float
+    value_ppm: float | None = None
+    baseline_ppm: float | None = None
+    status: str = "normal"
 
 
 class HeatmapResponse(BaseModel):
@@ -152,6 +178,11 @@ class HeatmapResponse(BaseModel):
     zones: list[ZoneRiskScore]
     active_alerts: list[str]
     plant_bounds: dict[str, float]
+    weather: WeatherReading | None = None
+    plant_name: str | None = None
+    plant_location: str | None = None
+    infrastructure: list[PlantInfrastructure] = Field(default_factory=list)
+    sensor_points: list[SensorPoint] = Field(default_factory=list)
 
 
 class PermitPreMortemRequest(BaseModel):
@@ -283,6 +314,23 @@ class SimulationState(BaseModel):
     total_ticks: int
     elapsed_seconds: float
     last_alert_id: str | None = None
+    weather: WeatherReading | None = None
+    permit_count: int = 0
+    sensor_count: int = 0
+
+
+class SimulationTimelineEvent(BaseModel):
+    tick: int
+    event_type: str
+    label: str
+    status: str
+    detail: str | None = None
+
+
+class SimulationTimelineResponse(BaseModel):
+    current_tick: int
+    total_ticks: int
+    events: list[SimulationTimelineEvent]
 
 
 class SimulationControlRequest(BaseModel):
