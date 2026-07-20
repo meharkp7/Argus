@@ -16,16 +16,21 @@ except ImportError:
 class EmbeddingEngine:
     """Generates embeddings using sentence-transformers with TF-IDF fallback."""
 
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2") -> None:
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2", use_cpu: bool = True) -> None:
         self.model_name = model_name
         self._model = None
         self._vocabulary: dict[str, int] = {}
         self._idf: dict[str, float] = {}
 
         if SentenceTransformer is not None:
+            import os
+            os.environ['TRANSFORMERS_CACHE'] = '/tmp'
+            os.environ['HF_HOME'] = '/tmp'
             try:
-                self._model = SentenceTransformer(model_name)
-            except Exception:
+                self._model = SentenceTransformer(model_name, device='cpu')
+                print(f"✓ Loaded sentence-transformer model: {model_name}")
+            except Exception as e:
+                print(f"⚠ Failed to load transformer model: {e}, falling back to TF-IDF")
                 self._model = None
 
     @property
