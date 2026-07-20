@@ -11,3 +11,5 @@ services:
         value: "3.11"
       - key: PYTHONPATH
         value: "."
+      - key: CORS_ORIGINS
+        value: "*"
