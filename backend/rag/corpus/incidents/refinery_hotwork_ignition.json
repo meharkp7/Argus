@@ -1,0 +1,12 @@
+{
+  "id": "INC-REFINERY-HOTWORK",
+  "title": "Refinery Hot Work Ignition Precursor Pattern",
+  "framework": "Incident Report",
+  "clause_reference": "Near-Miss Report #2024-087",
+  "content": "Near-miss at a refinery processing unit where hot work welding was authorized in Zone D while methane readings in adjacent Zone C showed a 2.8x baseline increase. The permit was approved without cross-referencing live gas monitoring data. Wind speed of 4.2 m/s was carrying vapor toward the hot work area. Investigation noted that the gas monitoring alarm and permit system operated independently with no automated correlation. Recommended action: implement compound risk detection that fuses gas monitoring with permit activity. This pattern preceded 2 documented gas ignition near-misses at comparable refinery facilities in the last 3 years.",
+  "metadata": {
+    "category": "incidents",
+    "incident_type": "hot_work_gas_ignition",
+    "pattern_tags": ["hot_work", "gas_elevated", "wind_direction", "simops"]
+  }
+}

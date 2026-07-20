@@ -1,0 +1,6 @@
+shift_id,zone_id,crew_name,start_time,end_time,overtime_hours,is_night_shift,contractor_ratio,experience_level
+SHIFT-NIGHT-01,ZONE-C,Contractor Crew Alpha,2026-07-19T22:00:00+05:30,2026-07-20T06:00:00+05:30,2.0,true,0.75,mixed
+SHIFT-NIGHT-01,ZONE-B,Core Operations Team B,2026-07-19T22:00:00+05:30,2026-07-20T06:00:00+05:30,0.0,true,0.2,experienced
+SHIFT-DAY-02,ZONE-C,Day Shift Core Team,2026-07-20T06:00:00+05:30,2026-07-20T14:00:00+05:30,0.0,false,0.3,experienced
+SHIFT-DAY-02,ZONE-A,Storage Team,2026-07-20T06:00:00+05:30,2026-07-20T14:00:00+05:30,0.0,false,0.1,experienced
+SHIFT-DAY-02,ZONE-D,QC Team,2026-07-20T06:00:00+05:30,2026-07-20T14:00:00+05:30,0.0,false,0.15,experienced

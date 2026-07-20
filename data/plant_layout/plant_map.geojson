@@ -1,0 +1,269 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "ARGUS Demo Integrated Steel & Gas Processing Complex",
+    "plant_id": "DEMO-STEEL-01",
+    "location": "Visakhapatnam Special Economic Zone, Andhra Pradesh",
+    "operator": "Demo Steel & Petrochemicals Ltd.",
+    "center": [83.2185, 17.6870],
+    "total_area_hectares": 42.6,
+    "coordinate_system": "WGS84",
+    "last_survey": "2026-03-15"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "boundary",
+        "name": "Plant Perimeter Fence",
+        "stroke": "#475569",
+        "stroke_width": 2,
+        "fill": "#f1f5f9"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2158, 17.6848], [83.2212, 17.6848], [83.2215, 17.6855],
+          [83.2218, 17.6888], [83.2210, 17.6895], [83.2185, 17.6898],
+          [83.2155, 17.6892], [83.2152, 17.6875], [83.2158, 17.6848]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-A",
+        "feature_type": "zone",
+        "name": "Raw Material Storage & Handling",
+        "hazard_class": "moderate",
+        "process_units": ["Coal yard", "Iron ore stockpile", "Limestone silo"],
+        "max_occupancy": 15,
+        "area_sqm": 12400,
+        "sensors": ["GS-11"],
+        "emergency_assembly": "EA-01"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2160, 17.6855], [83.2172, 17.6853], [83.2180, 17.6858],
+          [83.2178, 17.6866], [83.2168, 17.6870], [83.2162, 17.6864],
+          [83.2160, 17.6855]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-B",
+        "feature_type": "zone",
+        "name": "Blast Furnace & Processing Unit B",
+        "hazard_class": "high",
+        "process_units": ["Blast furnace #2", "Cast house", "Slag granulation"],
+        "max_occupancy": 20,
+        "area_sqm": 9800,
+        "sensors": ["GS-13", "TS-02"],
+        "emergency_assembly": "EA-02"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2182, 17.6856], [83.2196, 17.6858], [83.2202, 17.6864],
+          [83.2198, 17.6872], [83.2188, 17.6874], [83.2180, 17.6868],
+          [83.2182, 17.6856]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-C",
+        "feature_type": "zone",
+        "name": "Gas Handling, COG Main & Pipeline Section",
+        "hazard_class": "critical",
+        "process_units": ["COG header", "Gas holder", "Pipeline manifold C-4"],
+        "max_occupancy": 10,
+        "area_sqm": 7600,
+        "sensors": ["GS-12", "TS-01"],
+        "emergency_assembly": "EA-03"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2170, 17.6868], [83.2184, 17.6866], [83.2196, 17.6870],
+          [83.2198, 17.6878], [83.2190, 17.6886], [83.2178, 17.6888],
+          [83.2168, 17.6880], [83.2170, 17.6868]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-D",
+        "feature_type": "zone",
+        "name": "Finishing, Rolling Mill & Quality Control",
+        "hazard_class": "moderate",
+        "process_units": ["Hot strip mill", "QC lab", "Coil storage"],
+        "max_occupancy": 25,
+        "area_sqm": 11200,
+        "sensors": ["GS-14"],
+        "emergency_assembly": "EA-04"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2192, 17.6868], [83.2204, 17.6870], [83.2210, 17.6876],
+          [83.2206, 17.6884], [83.2196, 17.6886], [83.2188, 17.6880],
+          [83.2192, 17.6868]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_id": "ZONE-E",
+        "feature_type": "zone",
+        "name": "Utilities, Boiler House & Power Block",
+        "hazard_class": "high",
+        "process_units": ["Boiler #3", "Cooling towers", "Substation"],
+        "max_occupancy": 8,
+        "area_sqm": 5400,
+        "sensors": ["GS-15"],
+        "emergency_assembly": "EA-05"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.2198, 17.6878], [83.2210, 17.6880], [83.2214, 17.6888],
+          [83.2208, 17.6894], [83.2198, 17.6892], [83.2194, 17.6886],
+          [83.2198, 17.6878]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "pipeline",
+        "name": "COG Main Header (Zone C → B)",
+        "medium": "COG / CH4 blend",
+        "pressure_bar": 4.2,
+        "stroke": "#6366f1",
+        "stroke_width": 4
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.2182, 17.6878], [83.2188, 17.6872], [83.2194, 17.6866], [83.2198, 17.6862]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "pipeline",
+        "name": "H2S Scrubber Feed Line",
+        "medium": "Process off-gas",
+        "pressure_bar": 1.8,
+        "stroke": "#8b5cf6",
+        "stroke_width": 3
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.2178, 17.6876], [83.2185, 17.6870], [83.2192, 17.6864]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "road",
+        "name": "Main Haul Road",
+        "stroke": "#94a3b8",
+        "stroke_width": 5
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.2162, 17.6860], [83.2178, 17.6865], [83.2195, 17.6875], [83.2208, 17.6885]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "GS-11",
+        "zone_id": "ZONE-A",
+        "gas_type": "H2S",
+        "label": "GS-11 H2S"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2175, 17.6860] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "GS-12",
+        "zone_id": "ZONE-C",
+        "gas_type": "H2S",
+        "label": "GS-12 H2S (Critical)"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2180, 17.6872] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "GS-13",
+        "zone_id": "ZONE-B",
+        "gas_type": "CH4",
+        "label": "GS-13 CH4"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2190, 17.6865] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "GS-14",
+        "zone_id": "ZONE-D",
+        "gas_type": "H2S",
+        "label": "GS-14 H2S"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2195, 17.6875] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "GS-15",
+        "zone_id": "ZONE-E",
+        "gas_type": "CO",
+        "label": "GS-15 CO"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2200, 17.6880] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "TS-01",
+        "zone_id": "ZONE-C",
+        "gas_type": "Temperature",
+        "label": "TS-01 Process Temp"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2183, 17.6870] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_type": "sensor",
+        "sensor_id": "TS-02",
+        "zone_id": "ZONE-B",
+        "gas_type": "Temperature",
+        "label": "TS-02 Furnace Temp"
+      },
+      "geometry": { "type": "Point", "coordinates": [83.2188, 17.6863] }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "INC-VIZAG-PATTERN",
+  "title": "Vizag Steel Plant Gas Leak Near-Miss Pattern",
+  "framework": "Incident Report",
+  "clause_reference": "Investigation Finding #3",
+  "content": "Investigation into the Visakhapatnam Steel Plant gas leak incident identified a compound failure pattern: elevated H2S readings from gas sensor GS-12 (showing 3.2x baseline rise over 20 minutes) occurred simultaneously with an active hot work permit (#4471) approved 14 minutes prior in Zone C, approximately 40 meters from the sensor. Wind direction was carrying vapor toward the hot work zone. The shift changeover was occurring, reducing communication effectiveness between monitoring and operations teams. Key finding: no single sensor threshold was breached individually, but the combination of gas drift + hot work + shift changeover created a critical compound risk. The warning signal existed in separate systems but was not correlated in time. This pattern has been observed at 2 of the last 5 recorded gas ignition near-misses at comparable steel plants.",
+  "metadata": {
+    "category": "incidents",
+    "incident_type": "gas_leak_near_miss",
+    "pattern_tags": ["gas_drift", "hot_work", "shift_changeover", "compound_risk"]
+  }
+}

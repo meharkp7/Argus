@@ -1,0 +1,315 @@
+{
+  "scenario_id": "compound_risk_scenario",
+  "name": "Vizag-Style Compound Risk Scenario",
+  "description": "Simulates gas rise + hot work permit + shift changeover compound risk pattern",
+  "duration_minutes": 30,
+  "tick_interval_seconds": 1,
+  "plant_id": "DEMO-STEEL-01",
+  "baseline_conditions": {
+    "weather": {
+      "wind_speed_ms": 3.5,
+      "wind_direction_deg": 225,
+      "temperature_c": 32,
+      "humidity_pct": 78
+    },
+    "maintenance_status": {
+      "ZONE-A": "operational",
+      "ZONE-B": "operational",
+      "ZONE-C": "operational",
+      "ZONE-D": "operational",
+      "ZONE-E": "operational"
+    }
+  },
+  "events": [
+    {
+      "tick": 0,
+      "type": "shift_start",
+      "data": {
+        "shift_id": "SHIFT-NIGHT-01",
+        "zone_id": "ZONE-C",
+        "crew_name": "Contractor Crew Alpha",
+        "overtime_hours": 2.0,
+        "is_night_shift": true,
+        "contractor_ratio": 0.75,
+        "experience_level": "mixed"
+      }
+    },
+    {
+      "tick": 30,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "CS-2201",
+        "permit_type": "confined_space",
+        "zone_id": "ZONE-A",
+        "requester": "Anil Verma",
+        "description": "Tank inspection and cleaning - Storage Tank A-12",
+        "latitude": 17.6860,
+        "longitude": 83.2175,
+        "duration_hours": 6
+      }
+    },
+    {
+      "tick": 60,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "HW-4471",
+        "permit_type": "hot_work",
+        "zone_id": "ZONE-C",
+        "requester": "Rajesh Kumar",
+        "description": "Pipeline welding repair - Section C-4",
+        "latitude": 17.6869,
+        "longitude": 83.2185,
+        "duration_hours": 4
+      }
+    },
+    {
+      "tick": 90,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "GS-11",
+        "zone_id": "ZONE-A",
+        "gas_type": "H2S",
+        "baseline_ppm": 1.5,
+        "drift_profile": "exponential",
+        "target_multiplier": 2.5,
+        "duration_ticks": 500,
+        "latitude": 17.6860,
+        "longitude": 83.2175
+      }
+    },
+    {
+      "tick": 120,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "GS-12",
+        "zone_id": "ZONE-C",
+        "gas_type": "H2S",
+        "baseline_ppm": 2.0,
+        "drift_profile": "exponential",
+        "target_multiplier": 4.2,
+        "duration_ticks": 600,
+        "latitude": 17.6872,
+        "longitude": 83.2180
+      }
+    },
+    {
+      "tick": 150,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "HW-4472",
+        "permit_type": "hot_work",
+        "zone_id": "ZONE-B",
+        "requester": "Suresh Reddy",
+        "description": "Structural steel cutting for equipment removal",
+        "latitude": 17.6865,
+        "longitude": 83.2190,
+        "duration_hours": 3
+      }
+    },
+    {
+      "tick": 180,
+      "type": "shift_changeover",
+      "data": {
+        "shift_id": "SHIFT-DAY-02",
+        "zone_id": "ZONE-C",
+        "crew_name": "Day Shift Core Team",
+        "overtime_hours": 0,
+        "is_night_shift": false,
+        "contractor_ratio": 0.3,
+        "experience_level": "experienced"
+      }
+    },
+    {
+      "tick": 210,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "TS-01",
+        "zone_id": "ZONE-C",
+        "gas_type": "Temperature",
+        "baseline_ppm": 45.0,
+        "drift_profile": "linear",
+        "target_multiplier": 1.8,
+        "duration_ticks": 450,
+        "latitude": 17.6870,
+        "longitude": 83.2183
+      }
+    },
+    {
+      "tick": 240,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "HW-4473",
+        "permit_type": "hot_work",
+        "zone_id": "ZONE-D",
+        "requester": "Prakash Singh",
+        "description": "Emergency valve repair with torch cutting",
+        "latitude": 17.6875,
+        "longitude": 83.2195,
+        "duration_hours": 2
+      }
+    },
+    {
+      "tick": 270,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "GS-14",
+        "zone_id": "ZONE-D",
+        "gas_type": "H2S",
+        "baseline_ppm": 1.8,
+        "drift_profile": "exponential",
+        "target_multiplier": 3.8,
+        "duration_ticks": 550,
+        "latitude": 17.6875,
+        "longitude": 83.2195
+      }
+    },
+    {
+      "tick": 300,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "GS-13",
+        "zone_id": "ZONE-B",
+        "gas_type": "CH4",
+        "baseline_ppm": 50.0,
+        "drift_profile": "linear",
+        "target_multiplier": 2.4,
+        "duration_ticks": 500,
+        "latitude": 17.6865,
+        "longitude": 83.2190
+      }
+    },
+    {
+      "tick": 330,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "CS-2202",
+        "permit_type": "confined_space",
+        "zone_id": "ZONE-E",
+        "requester": "Vijay Kumar",
+        "description": "Underground pipeline inspection",
+        "latitude": 17.6880,
+        "longitude": 83.2200,
+        "duration_hours": 5
+      }
+    },
+    {
+      "tick": 360,
+      "type": "weather_change",
+      "data": {
+        "wind_speed_ms": 4.8,
+        "wind_direction_deg": 210,
+        "temperature_c": 33,
+        "humidity_pct": 75
+      }
+    },
+    {
+      "tick": 390,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "GS-15",
+        "zone_id": "ZONE-E",
+        "gas_type": "CO",
+        "baseline_ppm": 5.0,
+        "drift_profile": "exponential",
+        "target_multiplier": 3.5,
+        "duration_ticks": 480,
+        "latitude": 17.6880,
+        "longitude": 83.2200
+      }
+    },
+    {
+      "tick": 420,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "HW-4474",
+        "permit_type": "hot_work",
+        "zone_id": "ZONE-A",
+        "requester": "Ramesh Patel",
+        "description": "Flange bolt removal with heating torch",
+        "latitude": 17.6862,
+        "longitude": 83.2178,
+        "duration_hours": 3
+      }
+    },
+    {
+      "tick": 450,
+      "type": "sensor_drift_start",
+      "data": {
+        "sensor_id": "TS-02",
+        "zone_id": "ZONE-B",
+        "gas_type": "Temperature",
+        "baseline_ppm": 42.0,
+        "drift_profile": "linear",
+        "target_multiplier": 2.1,
+        "duration_ticks": 420,
+        "latitude": 17.6863,
+        "longitude": 83.2188
+      }
+    },
+    {
+      "tick": 480,
+      "type": "shift_changeover",
+      "data": {
+        "shift_id": "SHIFT-AFTERNOON-01",
+        "zone_id": "ZONE-B",
+        "crew_name": "Afternoon Relief Crew",
+        "overtime_hours": 1.5,
+        "is_night_shift": false,
+        "contractor_ratio": 0.6,
+        "experience_level": "mixed"
+      }
+    },
+    {
+      "tick": 510,
+      "type": "weather_change",
+      "data": {
+        "wind_speed_ms": 5.5,
+        "wind_direction_deg": 195,
+        "temperature_c": 34,
+        "humidity_pct": 72
+      }
+    },
+    {
+      "tick": 540,
+      "type": "permit_approved",
+      "data": {
+        "permit_id": "HW-4475",
+        "permit_type": "hot_work",
+        "zone_id": "ZONE-E",
+        "requester": "Deepak Sharma",
+        "description": "Exhaust system welding modification",
+        "latitude": 17.6882,
+        "longitude": 83.2202,
+        "duration_hours": 4
+      }
+    },
+    {
+      "tick": 600,
+      "type": "compound_risk_expected",
+      "data": {
+        "expected_pattern": "HP-GAS-IGNITION-HOTWORK",
+        "expected_zone": "ZONE-C",
+        "min_confidence": 0.70,
+        "baseline_should_not_trigger": true
+      }
+    }
+  ],
+  "sensor_baselines": {
+    "GS-11": {"zone_id": "ZONE-A", "gas_type": "H2S", "baseline_ppm": 1.5, "latitude": 17.6860, "longitude": 83.2175},
+    "GS-12": {"zone_id": "ZONE-C", "gas_type": "H2S", "baseline_ppm": 2.0, "latitude": 17.6872, "longitude": 83.2180},
+    "GS-13": {"zone_id": "ZONE-B", "gas_type": "CH4", "baseline_ppm": 50.0, "latitude": 17.6865, "longitude": 83.2190},
+    "GS-14": {"zone_id": "ZONE-D", "gas_type": "H2S", "baseline_ppm": 1.8, "latitude": 17.6875, "longitude": 83.2195},
+    "GS-15": {"zone_id": "ZONE-E", "gas_type": "CO", "baseline_ppm": 5.0, "latitude": 17.6880, "longitude": 83.2200},
+    "TS-01": {"zone_id": "ZONE-C", "gas_type": "Temperature", "baseline_ppm": 45.0, "latitude": 17.6870, "longitude": 83.2183},
+    "TS-02": {"zone_id": "ZONE-B", "gas_type": "Temperature", "baseline_ppm": 42.0, "latitude": 17.6863, "longitude": 83.2188},
+    "GS-16": {"zone_id": "ZONE-A", "gas_type": "CH4", "baseline_ppm": 45.0, "latitude": 17.6858, "longitude": 83.2173},
+    "GS-17": {"zone_id": "ZONE-D", "gas_type": "CO", "baseline_ppm": 6.0, "latitude": 17.6877, "longitude": 83.2197},
+    "GS-18": {"zone_id": "ZONE-E", "gas_type": "H2S", "baseline_ppm": 2.2, "latitude": 17.6881, "longitude": 83.2201}
+  },
+  "expected_outcomes": {
+    "compound_alert_tick_range": [400, 700],
+    "baseline_alert_tick": null,
+    "primary_hazard": "HP-GAS-IGNITION-HOTWORK",
+    "primary_zone": "ZONE-C"
+  }
+}

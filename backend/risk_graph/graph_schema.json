@@ -1,0 +1,214 @@
+{
+  "version": "1.0.0",
+  "description": "Causal risk graph derived from OISD/DGMS incident taxonomies and compound failure patterns",
+  "hazard_patterns": [
+    {
+      "id": "HP-GAS-IGNITION-HOTWORK",
+      "name": "Gas Ignition During Hot Work",
+      "severity": "critical",
+      "description": "Elevated flammable/toxic gas concentration combined with active hot work in proximity",
+      "required_conditions": [
+        {"node": "COND-GAS-ELEVATED", "min_weight": 0.7},
+        {"node": "COND-HOT-WORK-ACTIVE", "min_weight": 0.8},
+        {"node": "COND-PROXIMITY", "min_weight": 0.6}
+      ],
+      "amplifying_conditions": [
+        {"node": "COND-WIND-TOWARD-ZONE", "weight": 0.3},
+        {"node": "COND-SHIFT-CHANGEOVER", "weight": 0.2},
+        {"node": "COND-CONTRACTOR-CREW", "weight": 0.15},
+        {"node": "COND-NIGHT-SHIFT-FATIGUE", "weight": 0.2}
+      ],
+      "historical_precedents": [
+        "Vizag Steel Plant gas leak near-miss pattern",
+        "Refinery hot-work ignition precursor pattern"
+      ],
+      "recommended_actions": [
+        "Immediately suspend hot work permit in affected zone",
+        "Evacuate personnel within 100m downwind radius",
+        "Activate gas monitoring escalation protocol",
+        "Notify emergency response team and plant safety head"
+      ],
+      "regulatory_references": ["OISD-GDN-117", "OISD-STD-118", "Factory Act Section 41B"]
+    },
+    {
+      "id": "HP-H2S-EXPOSURE-CONFINED",
+      "name": "H2S Exposure in Confined Space",
+      "severity": "critical",
+      "description": "H2S drift into confined space entry zone during active permit",
+      "required_conditions": [
+        {"node": "COND-H2S-DRIFT", "min_weight": 0.75},
+        {"node": "COND-CONFINED-SPACE-ACTIVE", "min_weight": 0.8}
+      ],
+      "amplifying_conditions": [
+        {"node": "COND-INADEQUATE-VENTILATION", "weight": 0.4},
+        {"node": "COND-SHIFT-CHANGEOVER", "weight": 0.15}
+      ],
+      "historical_precedents": ["Tank farm H2S exposure incident pattern"],
+      "recommended_actions": [
+        "Revoke confined space entry permit",
+        "Deploy additional gas monitors at entry points",
+        "Verify ventilation system operation"
+      ],
+      "regulatory_references": ["OISD-GDN-126", "DGMS Circular on confined spaces"]
+    },
+    {
+      "id": "HP-SIMOPS-LIFTING-GAS",
+      "name": "Simultaneous Lifting Near Gas Release",
+      "severity": "high",
+      "description": "Heavy lifting operation concurrent with gas anomaly in overlapping zone",
+      "required_conditions": [
+        {"node": "COND-LIFTING-ACTIVE", "min_weight": 0.8},
+        {"node": "COND-GAS-ELEVATED", "min_weight": 0.6},
+        {"node": "COND-SIMOPS-OVERLAP", "min_weight": 0.7}
+      ],
+      "amplifying_conditions": [
+        {"node": "COND-CONTRACTOR-CREW", "weight": 0.2}
+      ],
+      "historical_precedents": ["Crane operation during process upset"],
+      "recommended_actions": [
+        "Halt lifting operations until gas levels normalize",
+        "Establish exclusion zone around crane swing radius"
+      ],
+      "regulatory_references": ["OISD-GDN-117", "Factory Act Section 22"]
+    },
+    {
+      "id": "HP-FATIGUE-COMPLEX-PROCEDURE",
+      "name": "Fatigue-Compounded Complex Operation",
+      "severity": "high",
+      "description": "Night shift with overtime and contractor crew executing complex permit work",
+      "required_conditions": [
+        {"node": "COND-NIGHT-SHIFT-FATIGUE", "min_weight": 0.7},
+        {"node": "COND-CONTRACTOR-CREW", "min_weight": 0.5},
+        {"node": "COND-COMPLEX-PERMIT", "min_weight": 0.6}
+      ],
+      "amplifying_conditions": [
+        {"node": "COND-SHIFT-CHANGEOVER", "weight": 0.25}
+      ],
+      "historical_precedents": ["Shift handover communication failure pattern"],
+      "recommended_actions": [
+        "Assign experienced supervisor to oversee operation",
+        "Extend pre-job safety briefing",
+        "Consider deferring to day shift if non-urgent"
+      ],
+      "regulatory_references": ["Factory Act Section 51", "DGFASLI fatigue guidelines"]
+    }
+  ],
+  "condition_nodes": [
+    {
+      "id": "COND-GAS-ELEVATED",
+      "label": "Elevated Gas Reading",
+      "category": "sensor",
+      "evaluation": "sensor_gas_ratio",
+      "threshold": 2.0,
+      "description": "Gas sensor reading exceeds 2x baseline"
+    },
+    {
+      "id": "COND-H2S-DRIFT",
+      "label": "H2S Drift Detected",
+      "category": "sensor",
+      "evaluation": "h2s_drift_rate",
+      "threshold": 3.0,
+      "description": "H2S concentration rising at 3x+ baseline rate over 20 minutes"
+    },
+    {
+      "id": "COND-HOT-WORK-ACTIVE",
+      "label": "Hot Work Permit Active",
+      "category": "permit",
+      "evaluation": "permit_type_active",
+      "permit_types": ["hot_work"],
+      "description": "Active hot work permit in zone"
+    },
+    {
+      "id": "COND-CONFINED-SPACE-ACTIVE",
+      "label": "Confined Space Entry Active",
+      "category": "permit",
+      "evaluation": "permit_type_active",
+      "permit_types": ["confined_space"],
+      "description": "Active confined space entry permit"
+    },
+    {
+      "id": "COND-LIFTING-ACTIVE",
+      "label": "Lifting Operation Active",
+      "category": "permit",
+      "evaluation": "permit_type_active",
+      "permit_types": ["lifting"],
+      "description": "Active lifting permit in zone"
+    },
+    {
+      "id": "COND-PROXIMITY",
+      "label": "Permit-Sensor Proximity",
+      "category": "spatial",
+      "evaluation": "distance_meters",
+      "threshold": 50,
+      "description": "Active permit within 50m of anomalous sensor"
+    },
+    {
+      "id": "COND-WIND-TOWARD-ZONE",
+      "label": "Wind Carrying Vapor Toward Zone",
+      "category": "weather",
+      "evaluation": "wind_direction_to_zone",
+      "description": "Wind direction carries gas vapor toward permit zone"
+    },
+    {
+      "id": "COND-SHIFT-CHANGEOVER",
+      "label": "Shift Changeover Window",
+      "category": "shift",
+      "evaluation": "shift_changeover_window",
+      "window_minutes": 30,
+      "description": "Within 30 minutes of shift changeover"
+    },
+    {
+      "id": "COND-CONTRACTOR-CREW",
+      "label": "High Contractor Crew Ratio",
+      "category": "shift",
+      "evaluation": "contractor_ratio",
+      "threshold": 0.5,
+      "description": "Contractor crew ratio exceeds 50%"
+    },
+    {
+      "id": "COND-NIGHT-SHIFT-FATIGUE",
+      "label": "Night Shift Fatigue Risk",
+      "category": "shift",
+      "evaluation": "night_shift_overtime",
+      "description": "Night shift with overtime hours"
+    },
+    {
+      "id": "COND-SIMOPS-OVERLAP",
+      "label": "Simultaneous Operations Overlap",
+      "category": "permit",
+      "evaluation": "simops_overlap",
+      "description": "Multiple high-risk permits active in overlapping zones"
+    },
+    {
+      "id": "COND-COMPLEX-PERMIT",
+      "label": "Complex High-Risk Permit",
+      "category": "permit",
+      "evaluation": "permit_complexity",
+      "permit_types": ["hot_work", "confined_space", "lifting"],
+      "description": "Complex permit type requiring enhanced supervision"
+    },
+    {
+      "id": "COND-INADEQUATE-VENTILATION",
+      "label": "Inadequate Ventilation",
+      "category": "maintenance",
+      "evaluation": "ventilation_status",
+      "description": "Ventilation system not confirmed operational"
+    }
+  ],
+  "zone_adjacency": {
+    "ZONE-A": ["ZONE-B", "ZONE-C"],
+    "ZONE-B": ["ZONE-A", "ZONE-C", "ZONE-D"],
+    "ZONE-C": ["ZONE-A", "ZONE-B", "ZONE-D"],
+    "ZONE-D": ["ZONE-B", "ZONE-C", "ZONE-E"],
+    "ZONE-E": ["ZONE-D"]
+  },
+  "sensor_zone_mapping": {
+    "GS-11": "ZONE-A",
+    "GS-12": "ZONE-C",
+    "GS-13": "ZONE-B",
+    "GS-14": "ZONE-D",
+    "GS-15": "ZONE-E",
+    "TS-01": "ZONE-C",
+    "TS-02": "ZONE-B"
+  }
+}
