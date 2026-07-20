@@ -13,12 +13,16 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path,
         configure: (proxy) => {
           proxy.on('error', (err) => {
             console.warn('Vite proxy error:', err.message);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Proxying:', req.method, req.url);
           });
         },
       },
