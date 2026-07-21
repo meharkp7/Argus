@@ -5,6 +5,18 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+try:
+    import spaces
+except ImportError:
+    class _SpacesShim:
+        @staticmethod
+        def GPU(*args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+
+    spaces = _SpacesShim()
+
 # Import ARGUS agents
 try:
     from backend.agents.sensor_agent import SensorAgent
@@ -66,6 +78,7 @@ def initialize_agents():
 # SENSOR AGENT DEMO
 # ============================================================================
 
+@spaces.GPU
 def demo_sensor_agent(zone_id: str, sensor_type: str, recent_readings: str):
     """Demo: Sensor Agent analyzes readings for anomalies"""
     try:
@@ -105,6 +118,7 @@ def demo_sensor_agent(zone_id: str, sensor_type: str, recent_readings: str):
 # PERMIT AGENT DEMO
 # ============================================================================
 
+@spaces.GPU
 def demo_permit_agent(work_type: str, zone_id: str, duration: float):
     """Demo: Permit Agent validates work permits against regulations"""
     try:
@@ -154,6 +168,7 @@ def demo_permit_agent(work_type: str, zone_id: str, duration: float):
 # CORRELATION AGENT DEMO
 # ============================================================================
 
+@spaces.GPU
 def demo_correlation_agent(event1: str, event2: str, event3: str):
     """Demo: Correlation Agent detects compound hazards"""
     try:
@@ -205,6 +220,7 @@ def demo_correlation_agent(event1: str, event2: str, event3: str):
 # EXPLAINER AGENT DEMO
 # ============================================================================
 
+@spaces.GPU
 def demo_explainer_agent(alert_id: str, reasoning_type: str):
     """Demo: Explainer Agent generates causal explanations"""
     try:
@@ -262,6 +278,7 @@ def demo_explainer_agent(alert_id: str, reasoning_type: str):
 # ORCHESTRATOR DEMO
 # ============================================================================
 
+@spaces.GPU
 def demo_orchestrator(scenario: str):
     """Demo: Orchestrator coordinates all agents for a real-time incident"""
     try:
