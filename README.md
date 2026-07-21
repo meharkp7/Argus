@@ -121,7 +121,7 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 ## Frontend Deployment
 
-The React frontend reads its Hugging Face Space URL from `VITE_HF_SPACE_URL`.
+The React frontend reads its backend URL from `VITE_API_BASE_URL`.
 
 Local development:
 
@@ -131,7 +131,7 @@ npm install
 npm run dev
 ```
 
-Set `VITE_HF_SPACE_URL=https://mk1647-argus.hf.space` to point the frontend at the deployed Gradio Space. If the variable is omitted, the frontend falls back to the same ARGUS Space URL by default.
+Set `VITE_API_BASE_URL=https://mk1647-argus.hf.space` to point the frontend at the deployed Hugging Face backend. The client will automatically call `/api/*` on that origin.
 
 ### Vercel
 
@@ -140,6 +140,6 @@ This repo now includes [vercel.json](/Users/meharkapoor7/argus/vercel.json:1) fo
 In Vercel Project Settings, set:
 
 ```bash
-VITE_HF_SPACE_URL=https://mk1647-argus.hf.space
+VITE_API_BASE_URL=https://mk1647-argus.hf.space
 ```
-This frontend now talks directly to the Gradio Space queue API instead of the old FastAPI backend.
+The backend API will be available at URLs like `https://mk1647-argus.hf.space/api/health`, while the Gradio demo UI remains available at `https://mk1647-argus.hf.space/gradio`.

@@ -1,91 +1,99 @@
-const DEFAULT_SPACE_URL = 'https://mk1647-argus.hf.space';
+const rawApiBase =
+  import.meta.env.VITE_API_BASE_URL?.trim() ||
+  '/api';
 
-function normalizeSpaceUrl(value) {
-  const raw = value?.trim() || DEFAULT_SPACE_URL;
-  return raw.replace(/\/+$/, '');
+function normalizeApiBase(value) {
+  if (!value) return '/api';
+
+  const trimmed = value.replace(/\/+$/, '');
+  if (trimmed === '') return '/api';
+  if (trimmed.endsWith('/api')) return trimmed;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return `${trimmed}/api`;
+  }
+  return trimmed;
 }
 
-const SPACE_URL = normalizeSpaceUrl(
-  import.meta.env.VITE_HF_SPACE_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_ARGUS_API_URL
-);
+const API_BASE = normalizeApiBase(rawApiBase);
 
-async function submitJob(apiName, data) {
-  const response = await fetch(`${SPACE_URL}/gradio_api/call/${apiName}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data }),
-  });
+async function request(path, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  if (!response.ok) {
-    throw new Error(`Space submission failed: ${response.status}`);
-  }
-
-  const payload = await response.json();
-  if (!payload.event_id) {
-    throw new Error('Space did not return an event id.');
-  }
-  return payload.event_id;
-}
-
-function tryParseJson(value) {
   try {
-    return JSON.parse(value);
-  } catch {
-    return value;
-  }
-}
-
-async function readJobResult(apiName, eventId) {
-  const response = await fetch(`${SPACE_URL}/gradio_api/call/${apiName}/${eventId}`);
-  if (!response.ok) {
-    throw new Error(`Space result fetch failed: ${response.status}`);
-  }
-
-  const text = await response.text();
-  const chunks = text
-    .split('\n\n')
-    .map((chunk) => chunk.trim())
-    .filter(Boolean);
-
-  for (let index = chunks.length - 1; index >= 0; index -= 1) {
-    const event = chunks[index];
-    const lines = event.split('\n');
-    const eventType = lines.find((line) => line.startsWith('event:'))?.slice(6).trim();
-    const dataLine = lines.find((line) => line.startsWith('data:'))?.slice(5).trim();
-
-    if (eventType === 'complete' && dataLine) {
-      const parsed = tryParseJson(dataLine);
-      return Array.isArray(parsed) ? parsed[0] : parsed;
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      ...options,
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(error || `API error: ${res.status}`);
     }
-
-    if (eventType === 'error' && dataLine) {
-      throw new Error(typeof tryParseJson(dataLine) === 'string' ? tryParseJson(dataLine) : 'Space execution failed.');
+    return res.json();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out while contacting the ARGUS backend.');
     }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  throw new Error('Space did not return a completed result.');
-}
-
-async function callSpace(apiName, inputs = []) {
-  const eventId = await submitJob(apiName, inputs);
-  return readJobResult(apiName, eventId);
 }
 
 export const api = {
-  getSpaceInfo: () => ({
-    name: 'mk1647/argus',
-    spaceUrl: SPACE_URL,
-  }),
-  initialize: () => callSpace('initialize'),
-  sensorAgent: ({ zoneId, sensorType, readingsJson }) =>
-    callSpace('sensor_agent', [zoneId, sensorType, readingsJson]),
-  permitAgent: ({ workType, zoneId, durationHours }) =>
-    callSpace('permit_agent', [workType, zoneId, durationHours]),
-  correlationAgent: ({ event1, event2, event3 }) =>
-    callSpace('correlation_agent', [event1, event2, event3]),
-  explainerAgent: ({ alertId, reasoningType }) =>
-    callSpace('explainer_agent', [alertId, reasoningType]),
-  orchestrator: ({ scenario }) => callSpace('orchestrator', [scenario]),
+  health: () => request('/health'),
+  getAlerts: (limit = 20) => request(`/alerts/?limit=${limit}`),
+  getAlert: (id) => request(`/alerts/${id}`),
+  investigateAlert: (id, query) =>
+    request(`/alerts/${id}/investigate`, {
+      method: 'POST',
+      body: JSON.stringify({ query, top_k: 5 }),
+    }),
+  triggerEmergency: (id, confirmed = false) =>
+    request(`/alerts/${id}/emergency-response?operator_confirmed=${confirmed}`, {
+      method: 'POST',
+    }),
+  getHeatmap: () => request('/heatmap/'),
+  getPlantLayout: () => request('/heatmap/layout'),
+  getPermits: () => request('/permits/'),
+  preMortemPermit: (data) =>
+    request('/permits/pre-mortem', { method: 'POST', body: JSON.stringify(data) }),
+  submitPermit: (data) =>
+    request('/permits/submit', { method: 'POST', body: JSON.stringify(data) }),
+  submitFeedback: (data) =>
+    request('/feedback/', { method: 'POST', body: JSON.stringify(data) }),
+  getTrustMetrics: () => request('/feedback/metrics'),
+  getThresholds: () => request('/feedback/thresholds'),
+  ragQuery: (query, alertId = null) =>
+    request('/rag/query', {
+      method: 'POST',
+      body: JSON.stringify({ query, alert_id: alertId, top_k: 5 }),
+    }),
+  complianceAudit: (documentText, frameworks) =>
+    request('/compliance/audit', {
+      method: 'POST',
+      body: JSON.stringify({
+        document_text: documentText,
+        applicable_frameworks: frameworks,
+      }),
+    }),
+  voiceReport: (transcript, language, zone) =>
+    request('/voice/report', {
+      method: 'POST',
+      body: JSON.stringify({
+        transcript,
+        language,
+        reporter_zone: zone,
+      }),
+    }),
+  getSimulationState: () => request('/simulation/state'),
+  controlSimulation: (action) =>
+    request('/simulation/control', {
+      method: 'POST',
+      body: JSON.stringify({ action }),
+    }),
+  stepSimulation: () => request('/simulation/step', { method: 'POST' }),
+  getEvidence: (limit = 50) => request(`/evidence?limit=${limit}`),
+  verifyEvidence: () => request('/evidence/verify'),
 };
