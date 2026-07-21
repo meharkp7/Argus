@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MapContainer, Polygon, Popup, TileLayer, useMap } from 'react-leaflet';
-import { api } from '../../api/client';
 
 const RISK_COLORS = {
   critical: { bg: '#DC2626', border: '#991B1B', opacity: 0.7, weight: 3 },
@@ -23,27 +22,7 @@ function FitBounds({ bounds }) {
   return null;
 }
 
-export default function GeospatialHeatmap({ onZoneSelect, selectedZone }) {
-  const [heatmap, setHeatmap] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    const fetchHeatmap = async () => {
-      try {
-        setRefreshing(true);
-        const data = await api.getHeatmap();
-        setHeatmap(data);
-        console.log('Heatmap loaded with zones:', data?.zones?.length || 0);
-      } catch (err) {
-        console.error('Heatmap fetch failed:', err);
-      } finally {
-        setRefreshing(false);
-      }
-    };
-    fetchHeatmap();
-    const interval = setInterval(fetchHeatmap, 2500);
-    return () => clearInterval(interval);
-  }, []);
+export default function GeospatialHeatmap({ heatmap, refreshing = false, onZoneSelect, selectedZone }) {
 
   const rankedZones = useMemo(() => 
     heatmap ? [...heatmap.zones].sort((a, b) => b.risk_score - a.risk_score) : [],

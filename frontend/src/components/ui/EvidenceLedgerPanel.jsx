@@ -20,7 +20,7 @@ export default function EvidenceLedgerPanel() {
       }
     };
     load();
-    const interval = setInterval(load, 8000);
+    const interval = setInterval(load, 20000);
     return () => clearInterval(interval);
   }, []);
 

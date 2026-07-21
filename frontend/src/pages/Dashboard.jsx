@@ -25,27 +25,33 @@ export default function Dashboard({ health }) {
   const [investigating, setInvestigating] = useState(false);
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [simBusy, setSimBusy] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const refresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
     try {
-      const [alertData, metricData, heatmapData, state] = await Promise.all([
+      const [alertData, metricData, heatmapData, state] = await Promise.allSettled([
         api.getAlerts(),
         api.getTrustMetrics(),
         api.getHeatmap(),
         api.getSimulationState(),
       ]);
-      setAlerts(alertData);
-      setMetrics(metricData);
-      setHeatmap(heatmapData);
-      setSimState(state);
+
+      if (alertData.status === 'fulfilled') setAlerts(alertData.value);
+      if (metricData.status === 'fulfilled') setMetrics(metricData.value);
+      if (heatmapData.status === 'fulfilled') setHeatmap(heatmapData.value);
+      if (state.status === 'fulfilled') setSimState(state.value);
     } catch (err) {
       console.error('Dashboard refresh failed:', err);
+    } finally {
+      setRefreshing(false);
     }
-  }, []);
+  }, [refreshing]);
 
   useEffect(() => {
     refresh();
-    const interval = setInterval(refresh, 2500);
+    const interval = setInterval(refresh, 15000);
     return () => clearInterval(interval);
   }, [refresh]);
 
@@ -147,6 +153,8 @@ export default function Dashboard({ health }) {
 
       <div className="dashboard-grid">
         <GeospatialHeatmap
+          heatmap={heatmap}
+          refreshing={refreshing}
           onZoneSelect={(zone) => {
             setSelectedZone(zone.zone_id);
             const zoneAlert = alerts.find((a) => a.zone_id === zone.zone_id);

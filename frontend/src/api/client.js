@@ -1,6 +1,7 @@
 const rawApiBase =
   import.meta.env.VITE_API_BASE_URL?.trim() ||
   '/api';
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 60000);
 
 function normalizeApiBase(value) {
   if (!value) return '/api';
@@ -18,7 +19,7 @@ const API_BASE = normalizeApiBase(rawApiBase);
 
 async function request(path, options = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
   try {
     const res = await fetch(`${API_BASE}${path}`, {

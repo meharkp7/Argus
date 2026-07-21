@@ -32,7 +32,7 @@ export default function TrustCalibrationChart({ metrics: externalMetrics }) {
       } catch (err) {
         console.error(err);
       }
-    }, 5000);
+    }, 20000);
     return () => clearInterval(interval);
   }, [externalMetrics]);
 
