@@ -8,7 +8,6 @@ from datetime import datetime
 from typing import Any
 
 import numpy as np
-from sklearn.ensemble import IsolationForest
 
 from backend.api.schemas import SensorReading
 from backend.config.settings import get_settings
@@ -40,7 +39,6 @@ class SensorAgent:
             lambda: deque(maxlen=self.settings.sensor_baseline_window)
         )
         self._ewma: dict[str, float] = {}
-        self._isolation_models: dict[str, IsolationForest] = {}
         self._multivariate_buffer: dict[str, deque[list[float]]] = defaultdict(
             lambda: deque(maxlen=50)
         )
@@ -148,17 +146,15 @@ class SensorAgent:
             return []
 
         X = np.array(list(buffer))
-        model = IsolationForest(
-            contamination=self.settings.isolation_forest_contamination,
-            random_state=42,
-        )
-        model.fit(X)
-        scores = model.decision_function(X)
-        predictions = model.predict(X)
+        mean = np.mean(X[:-1], axis=0)
+        std = np.std(X[:-1], axis=0)
+        std = np.where(std < 1e-6, 1.0, std)
+        z_scores = np.abs((X[-1] - mean) / std)
+        latest_score = float(np.max(z_scores))
+        is_outlier = latest_score >= self.settings.sensor_zscore_threshold
 
         anomalies = []
-        latest_score = float(scores[-1])
-        if predictions[-1] == -1:
+        if is_outlier:
             reading = readings[0]
             ratio = reading.value_ppm / reading.baseline_ppm if reading.baseline_ppm > 0 else 1.0
             anomalies.append(
@@ -175,7 +171,7 @@ class SensorAgent:
                     isolation_score=round(latest_score, 3),
                     is_anomalous=True,
                     severity="high",
-                    details={"detection_method": "isolation_forest_multivariate"},
+                    details={"detection_method": "rolling_multivariate_zscore"},
                 )
             )
 
