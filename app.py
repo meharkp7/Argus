@@ -351,7 +351,7 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             init_btn = gr.Button("Initialize ARGUS", variant="primary", scale=2)
             init_output = gr.Markdown("*Waiting for initialization...*")
             
-            init_btn.click(initialize_agents, outputs=init_output)
+            init_btn.click(initialize_agents, outputs=init_output, api_name="initialize")
         
         
         # ====== SENSOR AGENT ======
@@ -379,7 +379,12 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             sensor_btn = gr.Button("Run Sensor Agent", variant="primary")
             sensor_output = gr.Markdown()
             
-            sensor_btn.click(demo_sensor_agent, inputs=[sensor_zone, sensor_type, sensor_readings], outputs=sensor_output)
+            sensor_btn.click(
+                demo_sensor_agent,
+                inputs=[sensor_zone, sensor_type, sensor_readings],
+                outputs=sensor_output,
+                api_name="sensor_agent",
+            )
         
         
         # ====== PERMIT AGENT ======
@@ -403,7 +408,12 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             permit_btn = gr.Button("Validate Permit", variant="primary")
             permit_output = gr.Markdown()
             
-            permit_btn.click(demo_permit_agent, inputs=[permit_work, permit_zone, permit_duration], outputs=permit_output)
+            permit_btn.click(
+                demo_permit_agent,
+                inputs=[permit_work, permit_zone, permit_duration],
+                outputs=permit_output,
+                api_name="permit_agent",
+            )
         
         
         # ====== CORRELATION AGENT ======
@@ -435,7 +445,12 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             corr_btn = gr.Button("Detect Correlations", variant="primary")
             corr_output = gr.Markdown()
             
-            corr_btn.click(demo_correlation_agent, inputs=[event1, event2, event3], outputs=corr_output)
+            corr_btn.click(
+                demo_correlation_agent,
+                inputs=[event1, event2, event3],
+                outputs=corr_output,
+                api_name="correlation_agent",
+            )
         
         
         # ====== EXPLAINER AGENT ======
@@ -456,7 +471,12 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             explain_btn = gr.Button("Generate Explanation", variant="primary")
             explain_output = gr.Markdown()
             
-            explain_btn.click(demo_explainer_agent, inputs=[explain_alert, explain_type], outputs=explain_output)
+            explain_btn.click(
+                demo_explainer_agent,
+                inputs=[explain_alert, explain_type],
+                outputs=explain_output,
+                api_name="explainer_agent",
+            )
         
         
         # ====== ORCHESTRATOR ======
@@ -483,7 +503,12 @@ with gr.Blocks(title="ARGUS - Agent Demo", theme=gr.themes.Soft()) as app:
             orch_btn = gr.Button("Handle Incident", variant="primary")
             orch_output = gr.Markdown()
             
-            orch_btn.click(demo_orchestrator, inputs=[scenario], outputs=orch_output)
+            orch_btn.click(
+                demo_orchestrator,
+                inputs=[scenario],
+                outputs=orch_output,
+                api_name="orchestrator",
+            )
     
     
     gr.Markdown("""

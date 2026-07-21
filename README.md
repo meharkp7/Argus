@@ -118,3 +118,28 @@ All in <2 seconds with full audit trail.
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+
+## Frontend Deployment
+
+The React frontend reads its Hugging Face Space URL from `VITE_HF_SPACE_URL`.
+
+Local development:
+
+```bash
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Set `VITE_HF_SPACE_URL=https://mk1647-argus.hf.space` to point the frontend at the deployed Gradio Space. If the variable is omitted, the frontend falls back to the same ARGUS Space URL by default.
+
+### Vercel
+
+This repo now includes [vercel.json](/Users/meharkapoor7/argus/vercel.json:1) for Vite SPA hosting on Vercel.
+
+In Vercel Project Settings, set:
+
+```bash
+VITE_HF_SPACE_URL=https://mk1647-argus.hf.space
+```
+This frontend now talks directly to the Gradio Space queue API instead of the old FastAPI backend.
