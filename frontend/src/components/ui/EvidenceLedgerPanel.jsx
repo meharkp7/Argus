@@ -19,9 +19,12 @@ export default function EvidenceLedgerPanel() {
         console.error('Evidence fetch failed:', err);
       }
     };
-    load();
-    const interval = setInterval(load, 20000);
-    return () => clearInterval(interval);
+    const initial = setTimeout(load, 5000);
+    const interval = setInterval(load, 30000);
+    return () => {
+      clearTimeout(initial);
+      clearInterval(interval);
+    };
   }, []);
 
   return (

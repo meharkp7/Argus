@@ -31,17 +31,15 @@ export default function Dashboard({ health }) {
     if (refreshing) return;
     setRefreshing(true);
     try {
-      const [alertData, metricData, heatmapData, state] = await Promise.allSettled([
-        api.getAlerts(),
-        api.getTrustMetrics(),
-        api.getHeatmap(),
-        api.getSimulationState(),
-      ]);
+      const alertData = await api.getAlerts().catch((error) => ({ error }));
+      const heatmapData = await api.getHeatmap().catch((error) => ({ error }));
+      const metricData = await api.getTrustMetrics().catch((error) => ({ error }));
+      const state = await api.getSimulationState().catch((error) => ({ error }));
 
-      if (alertData.status === 'fulfilled') setAlerts(alertData.value);
-      if (metricData.status === 'fulfilled') setMetrics(metricData.value);
-      if (heatmapData.status === 'fulfilled') setHeatmap(heatmapData.value);
-      if (state.status === 'fulfilled') setSimState(state.value);
+      if (!alertData.error) setAlerts(alertData);
+      if (!heatmapData.error) setHeatmap(heatmapData);
+      if (!metricData.error) setMetrics(metricData);
+      if (!state.error) setSimState(state);
     } catch (err) {
       console.error('Dashboard refresh failed:', err);
     } finally {

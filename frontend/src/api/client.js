@@ -1,7 +1,8 @@
 const rawApiBase =
   import.meta.env.VITE_API_BASE_URL?.trim() ||
   '/api';
-const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 60000);
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 120000);
+const RETRY_DELAY_MS = 2000;
 
 function normalizeApiBase(value) {
   if (!value) return '/api';
@@ -17,9 +18,15 @@ function normalizeApiBase(value) {
 
 const API_BASE = normalizeApiBase(rawApiBase);
 
-async function request(path, options = {}) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function request(path, options = {}, attempt = 0) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  const method = (options.method || 'GET').toUpperCase();
+  const isRetryable = method === 'GET' || method === 'HEAD';
 
   try {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -34,7 +41,15 @@ async function request(path, options = {}) {
     return res.json();
   } catch (error) {
     if (error.name === 'AbortError') {
+      if (isRetryable && attempt === 0) {
+        await sleep(RETRY_DELAY_MS);
+        return request(path, options, attempt + 1);
+      }
       throw new Error('Request timed out while contacting the ARGUS backend.');
+    }
+    if (isRetryable && attempt === 0) {
+      await sleep(RETRY_DELAY_MS);
+      return request(path, options, attempt + 1);
     }
     throw error;
   } finally {
