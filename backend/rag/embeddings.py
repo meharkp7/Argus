@@ -6,11 +6,7 @@ import hashlib
 from typing import Any
 
 import numpy as np
-
-try:
-    from sentence_transformers import SentenceTransformer
-except ImportError:
-    SentenceTransformer = None
+from backend.config.settings import get_settings
 
 
 class EmbeddingEngine:
@@ -21,17 +17,27 @@ class EmbeddingEngine:
         self._model = None
         self._vocabulary: dict[str, int] = {}
         self._idf: dict[str, float] = {}
+        settings = get_settings()
 
-        if SentenceTransformer is not None:
-            import os
-            os.environ['TRANSFORMERS_CACHE'] = '/tmp'
-            os.environ['HF_HOME'] = '/tmp'
-            try:
-                self._model = SentenceTransformer(model_name, device='cpu')
-                print(f"✓ Loaded sentence-transformer model: {model_name}")
-            except Exception as e:
-                print(f"⚠ Failed to load transformer model: {e}, falling back to TF-IDF")
-                self._model = None
+        if not settings.use_transformer_embeddings:
+            print("ℹ Using TF-IDF fallback embeddings (USE_TRANSFORMER_EMBEDDINGS is disabled)")
+            return
+
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError:
+            print("⚠ sentence-transformers is unavailable, falling back to TF-IDF")
+            return
+
+        import os
+        os.environ['TRANSFORMERS_CACHE'] = '/tmp'
+        os.environ['HF_HOME'] = '/tmp'
+        try:
+            self._model = SentenceTransformer(model_name, device='cpu')
+            print(f"✓ Loaded sentence-transformer model: {model_name}")
+        except Exception as e:
+            print(f"⚠ Failed to load transformer model: {e}, falling back to TF-IDF")
+            self._model = None
 
     @property
     def using_transformer(self) -> bool:

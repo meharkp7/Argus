@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-sonnet-4-20250514"
 
     embedding_model: str = "all-MiniLM-L6-v2"
+    use_transformer_embeddings: bool = False
     rag_top_k: int = 5
     rag_min_similarity: float = 0.35
 
